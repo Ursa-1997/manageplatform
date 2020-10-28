@@ -63,6 +63,7 @@
 <script>
 import songsApi from "@/lib/api/songs";
 import commonJs from "@lib/tools/common";
+import utilsTool from "@/lib/utils/index";
 import store from "@src/store";
 export default {
   name: "",
@@ -108,6 +109,7 @@ export default {
   },
   mounted() {
     this.searchSongsList = store.state.songs.songList;
+    console.log(commonJs.GetUserApp())
   },
 
   methods: {
@@ -164,17 +166,29 @@ export default {
     },
     //获取封面
     GetCover(albumId) {
-      songsApi
-        .GetAlbumInfo({
-          id: albumId,
-        })
-        .then((res) => {
-          this.songInfo.cover = res.album.picUrl;
+      // songsApi
+      //   .GetAlbumInfo({
+      //     id: albumId,
+      //   })
+      //   .then((res) => {
+      //     this.songInfo.cover = res.album.picUrl;
+      //     this.SetSongsInfo()
+      //   });
+        utilsTool.GetSongCover({
+        id: albumId,
+        success: (res) => {
+          console.log(res)
+          this.songInfo.cover = res.songCover;
           this.SetSongsInfo()
-        });
+        },
+      });
     },
     SetSongsInfo() {
+      let songList = store.state.songs.songHistory
+      songList.push(this.songInfo)
       this.$store.dispatch("setSongInfo", this.songInfo);
+      this.$store.dispatch("pushSongRecord", songList);
+      this.$router.push({ name: "audioPlay", query: { play: 1,  } });
     },
     ChangePage(index) {
       this.start = (index - 1) * this.pageSize

@@ -11,11 +11,11 @@ module.exports = {
   //关闭eslint规范
   lintOnSave: false,
   devServer: {
-    port: 8089,
+    port: 8090,
     host: 'localhost',
     proxy: {
       '/api': {
-        target: 'http://localhost:8089',
+        target: 'http://localhost:8090',
         pathRewrite: {
           '^/api': '/hock'
         }
